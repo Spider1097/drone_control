@@ -1,0 +1,5 @@
+
+float64 pose_manipulator_x
+float64 pose_manipulator_y
+float64 pose_manipulator_z
+

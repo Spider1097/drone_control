@@ -1,0 +1,16 @@
+
+float64 pose_drone_x
+float64 pose_drone_y
+float64 pose_drone_z
+
+float64 latitude_drone
+float64 longitude_drone
+float64 altitude_drone
+
+float64 velocity_linear_drone_x
+float64 velocity_linear_drone_y
+float64 velocity_linear_drone_z
+float64 velocity_angular_drone_x
+float64 velocity_angular_drone_y
+float64 velocity_angular_drone_z
+
