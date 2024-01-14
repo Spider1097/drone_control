@@ -17,7 +17,7 @@ catkin init
 Install Mavros and Mavlink.
 
 ```
-cd ~/cdrone_ws
+cd ~/drone_ws
 wstool init ~/drone_ws/src
 
 rosinstall_generator --upstream mavros | tee /tmp/mavros.rosinstall
