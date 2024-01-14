@@ -51,6 +51,19 @@ git clone https://github.com/Spider1097/Drone-control.git
 cd ~/drone_ws
 catkin build
 ```
+## Run basic code
+We will use only the basic code in this tutorial; another code can be found in the 'src' folder.
+Before you must install PX4.
+
+```
+cd src/Firmware/
+make px4_sitl gazebo 
+
+roslaunch mavros px4.launch fcu_url:="udp://:14540@127.0.0.1:14557" 
+
+rosrun drone_control test_code 
+```
+![image](https://github.com/Spider1097/Drone-control/assets/118929720/b275c74f-60e8-4d1f-b62e-920bb485cd39)
 
 
 
