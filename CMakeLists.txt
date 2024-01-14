@@ -213,7 +213,38 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(test_code src/test_code.cpp)
-target_link_libraries(test_code ${catkin_LIBRARIES})
+###############################main code#############################
 
+add_executable(test_code_local src/Main_code/test_code_local.cpp)
+target_link_libraries(test_code_local ${catkin_LIBRARIES})
 
+add_executable(test_code_global src/Main_code/test_code_global.cpp)
+target_link_libraries(test_code_global ${catkin_LIBRARIES})
+
+add_executable(control_drone_use_keyboard src/Main_code/control_drone_use_keyboard.cpp)
+target_link_libraries(control_drone_use_keyboard ${catkin_LIBRARIES})
+
+add_executable(test_test src/Main_code/test_test.cpp)
+target_link_libraries(test_test ${catkin_LIBRARIES})
+
+add_executable(moving_local_value src/Main_code/moving_local_value.cpp)
+target_link_libraries(moving_local_value ${catkin_LIBRARIES})
+
+add_executable(moving_global_value src/Main_code/moving_global_value.cpp)
+target_link_libraries(moving_global_value ${catkin_LIBRARIES})
+
+###############################main code#############################
+
+################################listners###########################
+
+add_executable(listner_global_pos src/Listners/listner_global_pos.cpp)
+target_link_libraries(listner_global_pos ${catkin_LIBRARIES})
+
+add_executable(listner_local_pos src/Listners/listner_local_pos.cpp)
+target_link_libraries(listner_local_pos ${catkin_LIBRARIES})
+
+################################listners###########################
+
+############################### publishers#############################
+
+############################### publishers#############################

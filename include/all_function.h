@@ -211,10 +211,10 @@ txt_file filee;
 /*tolerance value */
 struct tolerance
 {
-    float pos_local_tolerance = 0.2;
-    float heading_local_tolerance = 0.2;
-    float pos_global_tolerance = 0.2;
-    float heading_global_tolerance = 0.2;
+    float pos_local_tolerance = 0.1;
+    float heading_local_tolerance = 0.1;
+    float pos_global_tolerance = 0.1;
+    float heading_global_tolerance = 0.1;
 };
 tolerance tolerance;
 /*tolerance value */
@@ -234,6 +234,19 @@ struct distance
 };
 distance distance;
 /*distance value */
+
+/*mission value*/
+struct mission_data
+{
+    float teta=0;
+    float counter=0;
+    float circle_x=0;
+    float circle_y=0;
+
+   
+};
+mission_data mission_data;
+/*mission value*/
 
 //////////////////////////////////section for value//////////////////////////////////
 
@@ -697,7 +710,6 @@ int set_destination_local_check(float x, float y, float z, float angle)
 int set_destination_global_check(double latitude, double longitude, double altitude, float heading)
 {
     
-
     pose_global.pose.position.latitude = latitude;
     pose_global.pose.position.longitude = longitude;
     pose_global.pose.position.altitude = altitude;
@@ -801,7 +813,7 @@ void set_destination_global(double latitude, double longitude, double altitude, 
 
 //////////////////////////////////section for classes////////////////////////////////////////
 
-class Myclass
+class Myclass_info
 {
 
 public:
@@ -1089,6 +1101,28 @@ int go_down_drone_curent_pose(float high)
 //////////////////////////////////section for functions/////////////////////////////////////
 
 //////////////////////////////////section for missions drone/////////////////////////////////////
+
+int circle(float radius, int how_many, float how_fast){
+
+    mission_data.circle_x=radius*cos(mission_data.teta);
+    mission_data.circle_y=radius*sin(mission_data.teta);
+
+    set_destination_local(mission_data.circle_x,mission_data.circle_y,2,0);
+
+    if(mission_data.teta >= 2 * M_PI){
+        mission_data.teta=0;
+        mission_data.counter++;
+    }
+
+    mission_data.teta+=how_fast;
+
+    if(how_many==mission_data.counter){
+        return 1; 
+    }
+    else{
+        return 0;
+    }
+}
 
 //////////////////////////////////section for missions drone/////////////////////////////////////
 

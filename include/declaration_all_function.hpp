@@ -124,9 +124,13 @@ int convert_global_distans_to_local(double set_latitude, double set_longitude);
 /*declare only ones
 wysylasz true do tych funckci do ktorych chcesz podsluchiwac dane
 1-global_value, 2-local_value 3-velocity value*/
-void Myclass::value_what_want_see(bool global_info, bool local_info, bool velocity_info)
+void Myclass_info::value_what_want_see(bool global_info, bool local_info, bool velocity_info)
 {
     open_info.global_value = global_info;
     open_info.local_value = local_info;
     open_info.value_velocity = velocity_info;
 }
+
+//////////////////////////// mission////////////////////////////
+
+int circle(float radius, int how_many, float how_fast);
