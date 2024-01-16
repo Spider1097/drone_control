@@ -237,6 +237,10 @@ target_link_libraries(moving_global_value ${catkin_LIBRARIES})
 
 ################################listners###########################
 
+
+add_executable(listner_pilot_connection src/Listners/listner_pilot_connection.cpp)
+target_link_libraries(listner_pilot_connection ${catkin_LIBRARIES})
+
 add_executable(listner_global_pos src/Listners/listner_global_pos.cpp)
 target_link_libraries(listner_global_pos ${catkin_LIBRARIES})
 
