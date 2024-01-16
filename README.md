@@ -40,7 +40,7 @@ source ~/.bashrc
 ```
 install geographiclib dependancy.
 ```
-sudo ~/catkin_ws/src/mavros/mavros/scripts/install_geographiclib_datasets.sh
+sudo ~/drone_ws/src/mavros/mavros/scripts/install_geographiclib_datasets.sh
 ```
 
 Install Drone-control and build the package.
