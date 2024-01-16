@@ -54,9 +54,10 @@ catkin build
 ## Run basic code
 We will use only the basic code in this tutorial; another code can be found in the 'src' folder.
 Before you must install PX4.
-If you do not install PX4 please go to file "doc" where you can find tutorial how to install PX4 and create a workspace
 
 ```
+If you do not install PX4 please go to file "doc" where you can find tutorial how to install PX4 and create a workspace
+
 cd src/Firmware/
 make px4_sitl gazebo 
 
