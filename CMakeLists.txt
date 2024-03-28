@@ -233,6 +233,9 @@ target_link_libraries(moving_local_value ${catkin_LIBRARIES})
 add_executable(moving_global_value src/Main_code/moving_global_value.cpp)
 target_link_libraries(moving_global_value ${catkin_LIBRARIES})
 
+add_executable(Relay_droniada_2024 src/Main_code/Relay_droniada_2024.cpp)
+target_link_libraries(Relay_droniada_2024 ${catkin_LIBRARIES})
+
 ###############################main code#############################
 
 ################################listners###########################
@@ -250,5 +253,10 @@ target_link_libraries(listner_local_pos ${catkin_LIBRARIES})
 ################################listners###########################
 
 ############################### publishers#############################
+
+add_executable(pub_data src/Publishers/pub_data.cpp)
+target_link_libraries(pub_data ${catkin_LIBRARIES})
+
+
 
 ############################### publishers#############################

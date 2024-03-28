@@ -64,12 +64,12 @@
 //////////////////////////////////section for library//////////////////////////////////
 
 /*custtom messenge where you sending date*/
-#include <iq_gnc/drone_data.h>
-#include <iq_gnc/mqtt_data.h>
-#include <iq_gnc/send_value.h>
-iq_gnc::drone_data drone_data;
-iq_gnc::mqtt_data mqtt_data;
-iq_gnc::send_value send_value;
+#include <drone_control/drone_data.h>
+#include <drone_control/mqtt_data.h>
+#include <drone_control/send_value.h>
+drone_control::drone_data drone_data;
+drone_control::mqtt_data mqtt_data;
+drone_control::send_value send_value;
 /*custtom messenge where you sending date*/
 
 /*all_subcriber, servicec and clinet what are using*/
@@ -110,6 +110,8 @@ struct close_tag
     bool close_back_home_position_global = false;
     bool back_choice_position_local = false;
     bool back_choice_position_global = false;
+    bool go_down_global = false;
+    bool go_up_global = false;
 };
 close_tag close_tag;
 /*close tages*/
@@ -135,7 +137,9 @@ struct home_value
 
     double global_pose_latitude = 0;
     double global_pose_longitude = 0;
-    double global_pose_altitude= 0;
+    double global_pose_altitude = 0;
+
+    double save_current_high = 0;
 };
 home_value home_value;
 /*Home value*/
@@ -143,9 +147,9 @@ home_value home_value;
 /*GPS value and else*/
 struct call_back
 {
-    double altitude = 0;
     double latitude = 0;
     double longitude = 0;
+    double altitude = 0;
 
     float position_x = 0;
     float position_y = 0;
@@ -213,8 +217,8 @@ struct tolerance
 {
     float pos_local_tolerance = 0.1;
     float heading_local_tolerance = 0.1;
-    float pos_global_tolerance = 0.1;
-    float heading_global_tolerance = 0.1;
+    float pos_global_tolerance = 0.000001;
+    float heading_global_tolerance = 0.01;
 };
 tolerance tolerance;
 /*tolerance value */
@@ -238,12 +242,10 @@ distance distance;
 /*mission value*/
 struct mission_data
 {
-    float teta=0;
-    float counter=0;
-    float circle_x=0;
-    float circle_y=0;
-
-   
+    float teta = 0;
+    float counter = 0;
+    float circle_x = 0;
+    float circle_y = 0;
 };
 mission_data mission_data;
 /*mission value*/
@@ -466,7 +468,7 @@ int check_waypoint_reached_local()
 int check_waypoint_reached_global()
 {
 
-    //global_pos_pub.publish(pose_global);
+    global_pos_pub.publish(pose_global);
 
     distance.deltaX = (pose_global.pose.position.latitude - call_back.latitude);
     distance.deltaY = (pose_global.pose.position.longitude - call_back.longitude);
@@ -518,7 +520,7 @@ void global_position_callback(const sensor_msgs::NavSatFix::ConstPtr &msg)
     {
         home_value.global_pose_latitude = call_back.latitude;
         home_value.global_pose_longitude = call_back.longitude;
-        home_value.global_pose_altitude=call_back.altitude;
+        home_value.global_pose_altitude = call_back.altitude;
         // close tag
         close_tag.close_pose_global++;
         // close tag
@@ -564,7 +566,7 @@ void publish_data(bool wyswietlac)
 
     if (Time.refresh_time == 0 && wyswietlac == true)
     {
-
+        ROS_INFO("-------------------------------------------");
         if (open_info.global_value == true)
         {
 
@@ -709,7 +711,7 @@ int set_destination_local_check(float x, float y, float z, float angle)
 
 int set_destination_global_check(double latitude, double longitude, double altitude, float heading)
 {
-    
+
     pose_global.pose.position.latitude = latitude;
     pose_global.pose.position.longitude = longitude;
     pose_global.pose.position.altitude = altitude;
@@ -1052,19 +1054,24 @@ int back_choice_position_global(float latitude, float longitude, float high_home
     }
 }
 
-/*do poprawy*/
-
 int go_up_drone_curent_pose(float high)
 {
 
+    if (close_tag.go_up_global == false)
+    {
+        home_value.save_current_high = high;
+        close_tag.go_up_global = true;
+    }
+
     pose_global.pose.position.latitude = call_back.latitude;
     pose_global.pose.position.longitude = call_back.longitude;
-    pose_global.pose.position.altitude = pose_global.pose.position.altitude + 0.02;
+    pose_global.pose.position.altitude = pose_global.pose.position.altitude + 0.01;
 
     global_pos_pub.publish(pose_global);
 
-    if (pose_global.pose.position.altitude+high > high - 0.2)
+    if (pose_global.pose.position.altitude - 0.2 > home_value.save_current_high)
     {
+        close_tag.go_up_global = false;
         return 1;
     }
     else
@@ -1072,22 +1079,25 @@ int go_up_drone_curent_pose(float high)
         return 0;
     }
 }
-
-/*do poprawy*/
-
-/*do poprawy*/
 
 int go_down_drone_curent_pose(float high)
 {
 
+    if (close_tag.go_down_global == false)
+    {
+        home_value.save_current_high = high;
+        close_tag.go_down_global = true;
+    }
+
     pose_global.pose.position.latitude = call_back.latitude;
     pose_global.pose.position.longitude = call_back.longitude;
-    pose_global.pose.position.altitude = pose_global.pose.position.altitude - 0.02;
+    pose_global.pose.position.altitude = pose_global.pose.position.altitude - 0.01;
 
     global_pos_pub.publish(pose_global);
 
-    if (pose_global.pose.position.altitude < high + 0.2)
+    if (pose_global.pose.position.altitude < home_value.global_pose_altitude+home_value.save_current_high + 0.2)
     {
+        close_tag.go_down_global = false;
         return 1;
     }
     else
@@ -1095,31 +1105,33 @@ int go_down_drone_curent_pose(float high)
         return 0;
     }
 }
-
-/*do poprawy*/
 
 //////////////////////////////////section for functions/////////////////////////////////////
 
 //////////////////////////////////section for missions drone/////////////////////////////////////
 
-int circle(float radius, int how_many, float how_fast){
+int circle(float radius, int how_many, float how_fast)
+{
 
-    mission_data.circle_x=radius*cos(mission_data.teta);
-    mission_data.circle_y=radius*sin(mission_data.teta);
+    mission_data.circle_x = radius * cos(mission_data.teta);
+    mission_data.circle_y = radius * sin(mission_data.teta);
 
-    set_destination_local(mission_data.circle_x,mission_data.circle_y,2,0);
+    set_destination_local(mission_data.circle_x, mission_data.circle_y, 2, 0);
 
-    if(mission_data.teta >= 2 * M_PI){
-        mission_data.teta=0;
+    if (mission_data.teta >= 2 * M_PI)
+    {
+        mission_data.teta = 0;
         mission_data.counter++;
     }
 
-    mission_data.teta+=how_fast;
+    mission_data.teta += how_fast;
 
-    if(how_many==mission_data.counter){
-        return 1; 
+    if (how_many == mission_data.counter)
+    {
+        return 1;
     }
-    else{
+    else
+    {
         return 0;
     }
 }
@@ -1143,9 +1155,9 @@ int Set_publishers_subscribers(ros::NodeHandle controlnode)
     }
 
     /*custom messange declaration*/
-    data_drone_pub = controlnode.advertise<iq_gnc::drone_data>("/drone_data", 1000);
-    data_mqtt_pub = controlnode.advertise<iq_gnc::mqtt_data>("/mqtt_data", 1000);
-    data_send_value_pub = controlnode.advertise<iq_gnc::send_value>("/send_value", 1000);
+    data_drone_pub = controlnode.advertise<drone_control::drone_data>("/drone_data", 1000);
+    data_mqtt_pub = controlnode.advertise<drone_control::mqtt_data>("/mqtt_data", 1000);
+    data_send_value_pub = controlnode.advertise<drone_control::send_value>("/send_value", 1000);
     /*custom messange declaration*/
 
     /*Subcribers*/
