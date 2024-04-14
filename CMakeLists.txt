@@ -254,9 +254,10 @@ target_link_libraries(listner_local_pos ${catkin_LIBRARIES})
 
 ############################### publishers#############################
 
+add_executable(check_and_shoot src/Publishers/check_and_shoot.cpp)
+target_link_libraries(check_and_shoot ${catkin_LIBRARIES})
+
 add_executable(pub_data src/Publishers/pub_data.cpp)
 target_link_libraries(pub_data ${catkin_LIBRARIES})
-
-
 
 ############################### publishers#############################

@@ -1,0 +1,7 @@
+<launch>
+    <!-- Uruchomienie programu C++ -->
+    <node pkg="drone_control" type="check_and_shoot" name="check_and_shoot_node" output="screen" />
+
+    <!-- Uruchomienie skryptu Pythona -->
+    <node name="control_servo_node" pkg="drone_control" type="control_servo.py" output="screen" />
+</launch>

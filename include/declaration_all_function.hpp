@@ -71,6 +71,10 @@ dana funkcja sie miesci w "set_destination_global" to niema potrzeby uzywaz ich
 na raz*/
 int check_waypoint_reached_global();
 
+
+/*sprawdza czy dron dolecial po 2 koordynatach tylko latitude i longitude*/
+int check_waypoint_reached_global_latitude_longitude();
+
 /*ta funkcja sprawdza czy drone dolecial do punktu z tolerancja 0.2 po wartoscia globalnych
 ktore sa przetworzone w wartosci lokalne za pomoco funkci "convert_global_distans_to_local"
 z wraca 1-dolecial 0-pozycja nie osiagnieta*/

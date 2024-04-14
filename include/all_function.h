@@ -485,6 +485,26 @@ int check_waypoint_reached_global()
     }
 }
 
+int check_waypoint_reached_global_latitude_longitude()
+{
+
+    //global_pos_pub.publish(pose_global);
+
+    distance.deltaX = (pose_global.pose.position.latitude - call_back.latitude);
+    distance.deltaY = (pose_global.pose.position.longitude - call_back.longitude);
+    //distance.deltaZ = (pose_global.pose.position.altitude - call_back.altitude);
+    distance.dMag = sqrt(pow(distance.deltaX, 2) + pow(distance.deltaY, 2));
+
+    if (distance.dMag < tolerance.pos_global_tolerance)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int check_waypoint_reached_global_convert_to_local()
 {
 
